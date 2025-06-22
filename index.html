@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iwst - Загрузка</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Skeleton Animation */
+        @keyframes skeleton {
+            0% {
+                background-position: -200px 0;
+            }
+            100% {
+                background-position: calc(200px + 100%) 0;
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200px 100%;
+            animation: skeleton 1.5s infinite;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .logo-skeleton {
+            width: 80px;
+            height: 32px;
+            border-radius: 4px;
+        }
+
+        .logo-img {
+            height: 32px;
+            width: auto;
+            display: none;
+        }
+
+        .logo-img.loaded {
+            display: block;
+        }
+
+        .github-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .github-btn.loaded {
+            display: flex;
+        }
+
+        .github-btn:not(.loaded) {
+            display: none;
+        }
+
+        .github-skeleton {
+            width: 90px;
+            height: 36px;
+            border-radius: 6px;
+        }
+
+        .github-btn:hover {
+            background: #1a1a1a;
+            border-color: #555;
+        }
+
+        .github-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Content Card */
+        .content-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .content-card {
+            position: absolute;
+            top: 80px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            color: black;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 24px;
+            width: 280px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            
+            /* Анимация появления из v11 */
+            opacity: 0;
+            transform: scale(0.8) translateY(-20px);
+            animation: liquidGlassAppear 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+
+        /* Keyframes из v11 для анимации */
+        @keyframes liquidGlassAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+                filter: blur(10px);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.02) translateY(-5px);
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+        }
+
+        /* Hover эффект для усиления Liquid Glass из v11 */
+        .content-card:hover {
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-date {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1;
+            color: #000000;
+        }
+
+        .card-bottom-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .card-description {
+            font-size: 15px;
+            color: #000000;
+            line-height: 1;
+            font-weight: 400;
+            flex: 1;
+        }
+
+        .card-arrow-img {
+            width: 40px;
+            height: 40px;
+            background: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .card-arrow-img img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .content-card:hover .card-arrow-img {
+            opacity: 1;
+        }
+
+        /* Loading Text */
+        .loading-text {
+            font-family: "Roboto Mono", monospace;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .loading-dots {
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        .dot {
+            opacity: 0;
+            animation: dotPulse 1.5s infinite;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes dotPulse {
+            0%, 60%, 100% {
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            font-family: "Roboto Mono", monospace;
+            font-weight: 400;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #888;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .content-card {
+                right: 20px;
+                width: 260px;
+                top: 70px;
+            }
+
+            .loading-text {
+                font-size: 24px;
+            }
+
+            .footer {
+                bottom: 20px;
+                padding: 0 20px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-card {
+                position: relative;
+                top: 20px;
+                right: auto;
+                margin: 0 20px;
+                width: calc(100% - 40px);
+            }
+
+            .loading-text {
+                font-size: 20px;
+                top: 55%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .loading-dots {
+                display: block;
+                letter-spacing: 2px;
+            }
+
+            .card-bottom-container {
+                gap: 12px;
+            }
+
+            .card-arrow-img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .card-arrow-img img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-skeleton skeleton" id="logoSkeleton"></div>
+            <img src="Group 5.svg" alt="iwst" class="logo-img" id="logoImg">
+        </div>
+        
+        <div class="github-skeleton skeleton" id="githubSkeleton"></div>
+        <a href="#" class="github-btn" id="githubBtn">
+            <svg class="github-icon" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            GitHub
+        </a>
+    </div>
+
+    <!-- Content Card -->
+    <a href="#" class="content-card-link">
+        <div class="content-card">
+            <div class="card-date">10 июня 2025</div>
+            <div class="card-title">AMD Ryzen 9 9950X — мощность без компромиссов</div>
+            <div class="card-bottom-container">
+                <div class="card-description">
+                    Серверы с топовыми процессорами и гибкими тарифами для ваших проектов. Максимальная скорость, защита от DDoS и поддержка 24/7!
+                </div>
+                <div class="card-arrow-img">
+                    <img src="arrow_forward_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24 1.svg" alt="Arrow">
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Loading Text -->
+    <div class="loading-text">
+        Загрузка<span class="loading-dots">
+            <span class="dot">.</span>
+            <span class="dot">.</span>
+            <span class="dot">.</span>
+        </span>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        продолжая, ты соглашаешься с <a href="#">условиями и этикой использования</a>
+    </div>
+
+    <script>
+        // Функция для показа скелетонов до загрузки
+        function initializeSkeletons() {
+            const logoImg = document.getElementById('logoImg');
+            const logoSkeleton = document.getElementById('logoSkeleton');
+            const githubBtn = document.getElementById('githubBtn');
+            const githubSkeleton = document.getElementById('githubSkeleton');
+
+            // Обработчик загрузки логотипа
+            logoImg.onload = function() {
+                logoSkeleton.style.display = 'none';
+                logoImg.classList.add('loaded');
+            };
+
+            // Симуляция загрузки GitHub кнопки (через 1.5 секунды)
+            setTimeout(() => {
+                githubSkeleton.style.display = 'none';
+                githubBtn.classList.add('loaded');
+            }, 1500);
+
+            // Если изображение уже загружено
+            if (logoImg.complete) {
+                logoImg.onload();
+            }
+        }
+
+        // Запуск при загрузке страницы
+        document.addEventListener('DOMContentLoaded', initializeSkeletons);
+    </script>
+</body>
+</html>
