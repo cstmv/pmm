@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мостик // Ilya web studio</title>
+    <title>Ред // Ilya web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
         }
 
         body {
-            background-color: #000000;
+            background-color: #0a0a0a;
             color: white;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
@@ -371,7 +371,7 @@
     </div>
 
     <!-- Content Card -->
-    <a href="#" class="content-card-link">
+    <a href="https://github.com/cstmv" class="content-card-link">
         <div class="content-card">
             <div class="card-date">10 июня 2025</div>
             <div class="card-title">AMD Ryzen 9 9950X — мощность без компромиссов</div>
@@ -388,7 +388,7 @@
 
     <!-- Loading Text -->
     <div class="loading-text">
-        Загрузка<span class="loading-dots">
+        Редирект<span class="loading-dots">
             <span class="dot">.</span>
             <span class="dot">.</span>
             <span class="dot">.</span>
@@ -426,8 +426,18 @@
             }
         }
 
+        // Автоматический переход на only.digital через 2 секунды
+        function autoRedirect() {
+            setTimeout(() => {
+                window.location.href = 'https://only.digital/';
+            }, 2000);
+        }
+
         // Запуск при загрузке страницы
-        document.addEventListener('DOMContentLoaded', initializeSkeletons);
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSkeletons();
+            autoRedirect();
+        });
     </script>
 </body>
 </html>
